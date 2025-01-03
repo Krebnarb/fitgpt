@@ -1,0 +1,45 @@
+{
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "prisma": "5.22",
+    "tailwindcss": "^3.4.17",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "name": "fitgpt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "seed": "ts-node prisma/seed.ts",
+    "migrate:dev": "npx prisma migrate dev",
+    "migrate:dev:create": "npx prisma migrate dev --create-only",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "prisma:generate": "npx prisma generate",
+    "prisma:studio": "npx prisma studio",
+    "prisma:seed": "npx prisma db seed",
+    "start": "nest start",
+    "start:dev": "ts-node-dev src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/swagger": "^8.1.0",
+    "@nestjs/testing": "^10.4.15",
+    "@prisma/client": "latest",
+    "axios": "^1.7.9",
+    "class-validator": "^0.14.1",
+    "moment": "^2.30.1",
+    "nestjs-prisma": "^0.23.0",
+    "react-router-dom": "^7.1.1",
+    "swagger-ui-express": "^5.0.1",
+    "testing": "^3.1.0"
+  },
+  "prisma": {
+    "seed": "ts-node src/prisma/seed/index.ts"
+  }
+}

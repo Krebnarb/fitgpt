@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  seeds    = ["./seed/index.ts"] // Specify the path to your seed file here
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model WorkoutSet {
+  id          Int              @id @default(autoincrement())
+  name        String           @db.VarChar(255)
+  description String?          @db.Text
+  items       WorkoutSetItem[] @relation("WorkoutSetToItems")
+}
+
+model WorkoutSetItem {
+  id              Int          @id @default(autoincrement())
+  workoutSetId    Int
+  order           Int
+  listWorkoutId   Int
+  workoutSet      WorkoutSet   @relation("WorkoutSetToItems", fields: [workoutSetId], references: [id])
+  workoutListItem ListWorkouts @relation(fields: [listWorkoutId], references: [id])
+}
+
+model WorkoutSetInstance {
+  id            Int                      @id @default(autoincrement())
+  scheduledDate DateTime
+  description   String?                  @db.Text
+  status        Status                   @default(SCHEDULED)
+  itemInstances WorkoutSetItemInstance[]
+}
+
+model ListWorkouts {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(255)
+  targetArea             TargetArea
+  WorkoutSetItem         WorkoutSetItem[]
+  WorkoutSetItemInstance WorkoutSetItemInstance[]
+}
+
+enum TargetArea {
+  Chest
+  Abs
+  Shoulders
+  Back
+  Biceps
+  Triceps
+  Cardio
+  Legs
+}
+
+model WorkoutSetItemInstance {
+  id                   Int                @id @default(autoincrement())
+  workoutSetInstanceId Int
+  listWorkoutId        Int
+  status               Status             @default(NOT_STARTED)
+  workoutSetInstance   WorkoutSetInstance @relation(fields: [workoutSetInstanceId], references: [id])
+  workoutListItem      ListWorkouts       @relation(fields: [listWorkoutId], references: [id])
+  reps                 Rep[]
+}
+
+model Rep {
+  id                       Int                    @id @default(autoincrement())
+  workoutSetItemInstanceId Int
+  repNumber                Int
+  count                    Int
+  weight                   Float?
+  notes                    String?                @db.Text
+  workoutSetItemInstance   WorkoutSetItemInstance @relation(fields: [workoutSetItemInstanceId], references: [id])
+}
+
+enum Status {
+  SCHEDULED
+  COMPLETED
+  NOT_STARTED
+}
