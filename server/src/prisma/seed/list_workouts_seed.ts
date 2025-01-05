@@ -32,14 +32,5 @@ export async function main() {
     });
   }
 
-  console.log("Database seeded successfully!");
+  console.log("listWorkouts Database seeded successfully!");
 }
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
