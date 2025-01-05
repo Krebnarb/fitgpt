@@ -15,4 +15,15 @@ export class WorkoutSetInstanceController {
     id = Number(id);
     return this.workoutSetInstanceService.findOne(id);
   }
+
+  @Get()
+  async findAll() {
+    return this.workoutSetInstanceService.findAll();
+  }
+
+  @Post('copy/:id')
+  async copy(@Param('id') id: number) {
+    id = Number(id);
+    return this.workoutSetInstanceService.copy(id);
+  }
 }
