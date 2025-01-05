@@ -4,6 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Enable CORS with specific origin
+  app.enableCors({
+    origin: '*'
+  });
+
   app.setGlobalPrefix('api/v1');
   const config = new DocumentBuilder()
     .setTitle('FitGPT API')
