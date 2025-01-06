@@ -7,11 +7,10 @@ const App = () => {
   const [audioURL, setAudioURL] = useState('');
   const [transcription, setTranscription] = useState('');
   const [ollamaResponse, setOllamaResponse] = useState('');
-
-  const recorder = new MicRecorder({
-    bitRate: 128,
-  });
-
+  const [recorder, setRecorder] = useState(
+    new MicRecorder({ bitRate: 128 })
+  );
+  
   const startRecording = () => {
     recorder
       .start()
@@ -35,7 +34,7 @@ const App = () => {
 
         // Send the audio to the backend for transcription and Ollama response
         axios
-          .post('http://localhost:3001/speech/transcribe', formData, {
+          .post('http://localhost:3001/api/v1/speech/transcribe', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
           })
           .then((response) => {

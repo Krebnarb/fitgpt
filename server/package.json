@@ -22,7 +22,9 @@
     "prisma:studio": "npx prisma studio",
     "prisma:seed": "npx prisma db seed",
     "start": "nest start",
-    "start:dev": "ts-node-dev src/main.ts"
+    "start:dev": "ts-node-dev src/main.ts",
+    "start:debug": "nest start --debug --watch",
+    "start:build": "nest build"
   },
   "keywords": [],
   "author": "",
