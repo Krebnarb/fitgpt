@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WorkoutSetInstanceModule } from './modules/workout-set-instance/workout-set-instance.module';
 import { SpeechModule } from './modules/speech/speech.module';
+import { RepModule } from './modules/rep/rep.module';
 // ...existing code...
 
 @Module({
@@ -11,7 +12,8 @@ import { SpeechModule } from './modules/speech/speech.module';
       envFilePath: '.env', // Explicitly load the .env file in the root directory
     }),
     WorkoutSetInstanceModule,
-    SpeechModule
+    SpeechModule,
+    RepModule
   ],
   // ...existing code...
 })

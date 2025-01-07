@@ -73,8 +73,28 @@ model Rep {
   repNumber                Int
   count                    Int
   weight                   Float?
+  weightUnit               WeightUnit? @default(lbs)
+  distance                 Float?
+  distanceUnit             DistanceUnit? @default(mi)
+  time                     Float?
+  timeUnit                 TimeUnit? @default(min)
   notes                    String?                @db.Text
   workoutSetItemInstance   WorkoutSetItemInstance @relation(fields: [workoutSetItemInstanceId], references: [id])
+}
+
+enum TimeUnit {
+  min
+  sec
+}
+
+enum DistanceUnit {
+  mi
+  km
+}
+
+enum WeightUnit {
+  lbs
+  kg
 }
 
 enum Status {

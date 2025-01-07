@@ -21,6 +21,7 @@
     "prisma:generate": "npx prisma generate",
     "prisma:studio": "npx prisma studio",
     "prisma:seed": "npx prisma db seed",
+    "prisma:push": "npx prisma db push",
     "start": "nest start",
     "start:dev": "ts-node-dev src/main.ts",
     "start:debug": "nest start --debug --watch",
