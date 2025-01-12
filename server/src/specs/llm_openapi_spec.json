@@ -1,0 +1,295 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/api/v1/workout-set-instances/{id}": {
+            "get": {
+                "operationId": "WorkoutSetInstanceController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "workout-set-instances"
+                ]
+            }
+        },
+        "/api/v1/workout-set-instances": {
+            "get": {
+                "operationId": "WorkoutSetInstanceController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "workout-set-instances"
+                ]
+            }
+        },
+        "/api/v1/workout-set-instances/copy/{id}": {
+            "post": {
+                "operationId": "WorkoutSetInstanceController_copy",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "workout-set-instances"
+                ]
+            }
+        },
+        "/api/v1/speech/transcribe": {
+            "post": {
+                "operationId": "SpeechController_transcribeAudio",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Speech"
+                ]
+            }
+        },
+        "/api/v1/speech/prompt": {
+            "post": {
+                "operationId": "SpeechController_promptOllama",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Speech"
+                ]
+            }
+        },
+        "/api/v1/reps": {
+            "post": {
+                "operationId": "RepController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRepDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The record has been successfully created.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateRepDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            },
+            "get": {
+                "operationId": "RepController_findAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Return all reps.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CreateRepDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            }
+        },
+        "/api/v1/reps/copy/{workoutSetItemInstanceId}": {
+            "post": {
+                "operationId": "RepController_copy",
+                "parameters": [
+                    {
+                        "name": "workoutSetItemInstanceId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRepDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The rep has been successfully copied.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateRepDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            }
+        },
+        "/api/v1/reps/{id}": {
+            "get": {
+                "operationId": "RepController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return a single rep.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateRepDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            },
+            "patch": {
+                "operationId": "RepController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRepDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The record has been successfully updated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateRepDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            },
+            "delete": {
+                "operationId": "RepController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The record has been successfully deleted."
+                    }
+                },
+                "tags": [
+                    "reps"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "FitGPT API",
+        "description": "The FitGPT API description",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "schemas": {
+            "CreateRepDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdateRepDto": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    }
+}

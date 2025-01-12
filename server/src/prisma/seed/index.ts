@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { main as seedWorkoutSetInstances } from './workout_set_instances_seed';
 import { main as seedListWorkouts } from './list_workouts_seed';
+import { main as seedWorkoutPlans}  from './workout_plan_seed';
 
 async function main() {
   await seedListWorkouts();
-  await seedWorkoutSetInstances();
+  await seedWorkoutPlans();
   console.log("All seeds executed successfully!");
 }
 

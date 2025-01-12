@@ -22,6 +22,8 @@ export async function main() {
     { id: 16, name: "Leg Extensions", targetArea: TargetArea.Legs },
     { id: 17, name: "Lying Leg Curls", targetArea: TargetArea.Legs },
     { id: 18, name: "Calf Raises", targetArea: TargetArea.Legs },
+    { id: 19, name: "Dry Sauna", targetArea: TargetArea.Cardio },
+    { id: 20, name: "Run: Treadmill", targetArea: TargetArea.Cardio },
   ];
 
   for (const workout of listWorkouts) {

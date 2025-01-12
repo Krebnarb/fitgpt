@@ -14,13 +14,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model WorkoutSet {
-  id          Int              @id @default(autoincrement())
-  name        String           @db.VarChar(255)
-  description String?          @db.Text
-  items       WorkoutSetItem[] @relation("WorkoutSetToItems")
+// Create Workout Plan, w/ columns for name, description, and a collection of WorkoutPlanSetSchedules
+model WorkoutPlan {
+  id          Int                      @id @default(autoincrement())
+  name        String                   @db.VarChar(255)
+  description String?                  @db.Text
+  startDate   DateTime                 @default(now())
+  schedule    WorkoutPlanSetSchedule[] @relation("WorkoutPlanToSchedule")
 }
 
+// Create workoutPlanSetSchedules, with columns for days_of_week (Array of Ints), and a workoutSetId
+model WorkoutPlanSetSchedule {
+  id                  Int                  @id @default(autoincrement())
+  daysOfWeek          Int[]
+  workoutSet          WorkoutSet           @relation(fields: [workoutSetId], references: [id], name: "WorkoutPlanToSchedule")
+  workoutPlan         WorkoutPlan?         @relation(fields: [workoutPlanId], references: [id], name: "WorkoutPlanToSchedule")
+  workoutSetInstances WorkoutSetInstance[] @relation("WorkoutPlanSetScheduleToInstance")
+  notes               String?              @db.Text
+  workoutPlanId       Int?
+  workoutSetId        Int
+}
+
+// A collection of Individual Workouts
+// For example, name = "Abs Workout", and items = [Crunches, Leg Raises, Planks]
+model WorkoutSet {
+  id          Int                      @id @default(autoincrement())
+  name        String                   @db.VarChar(255)
+  description String?                  @db.Text
+  items       WorkoutSetItem[]         @relation("WorkoutSetToItems")
+  schedules   WorkoutPlanSetSchedule[] @relation("WorkoutPlanToSchedule")
+}
+
+// A single workout item, like "Crunches" or "Leg Raises"
+// For example, order = 1, workoutSetId = 1, listWorkoutId = 1
+// ListWorkoutId refers to the master list of workouts
 model WorkoutSetItem {
   id              Int          @id @default(autoincrement())
   workoutSetId    Int
@@ -31,11 +58,14 @@ model WorkoutSetItem {
 }
 
 model WorkoutSetInstance {
-  id            Int                      @id @default(autoincrement())
-  scheduledDate DateTime
-  description   String?                  @db.Text
-  status        Status                   @default(SCHEDULED)
-  itemInstances WorkoutSetItemInstance[]
+  id                       Int                      @id @default(autoincrement())
+  scheduledDate            DateTime
+  actualDate               DateTime?
+  description              String?                  @db.Text
+  status                   Status                   @default(SCHEDULED)
+  workoutPlanSetSchedule   WorkoutPlanSetSchedule   @relation(fields: [workoutPlanSetScheduleId], references: [id], name: "WorkoutPlanSetScheduleToInstance")
+  workoutSetItemInstances  WorkoutSetItemInstance[] @relation("WorkoutSetInstanceToItemInstance")
+  workoutPlanSetScheduleId Int
 }
 
 model ListWorkouts {
@@ -60,9 +90,10 @@ enum TargetArea {
 model WorkoutSetItemInstance {
   id                   Int                @id @default(autoincrement())
   workoutSetInstanceId Int
+  status              Status             @default(NOT_STARTED)
+  order                Int
   listWorkoutId        Int
-  status               Status             @default(NOT_STARTED)
-  workoutSetInstance   WorkoutSetInstance @relation(fields: [workoutSetInstanceId], references: [id])
+  workoutSetInstance   WorkoutSetInstance @relation(fields: [workoutSetInstanceId], references: [id], name: "WorkoutSetInstanceToItemInstance")
   workoutListItem      ListWorkouts       @relation(fields: [listWorkoutId], references: [id])
   reps                 Rep[]
 }
@@ -71,13 +102,13 @@ model Rep {
   id                       Int                    @id @default(autoincrement())
   workoutSetItemInstanceId Int
   repNumber                Int
-  count                    Int
+  count                    Int?
   weight                   Float?
-  weightUnit               WeightUnit? @default(lbs)
+  weightUnit               WeightUnit?            @default(lbs)
   distance                 Float?
-  distanceUnit             DistanceUnit? @default(mi)
+  distanceUnit             DistanceUnit?          @default(mi)
   time                     Float?
-  timeUnit                 TimeUnit? @default(min)
+  timeUnit                 TimeUnit?              @default(min)
   notes                    String?                @db.Text
   workoutSetItemInstance   WorkoutSetItemInstance @relation(fields: [workoutSetItemInstanceId], references: [id])
 }

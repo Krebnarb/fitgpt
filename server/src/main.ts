@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { Request, Response } from 'express';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
@@ -18,6 +20,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  // New route to return OpenAPI spec as JSON
+  app.use('/api-json', (req: Request, res: Response) => {
+    res.json(document);
+  });
 
   await app.listen(3001);
 }
