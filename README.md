@@ -99,11 +99,11 @@ A user defines a Workout Plan, which is a collection of Workout Sets. Each Worko
 ```mermaid
 graph TD
     A[Workout Plan]
-    A --> B[WorkoutSchedule 1
+    A --> B[WorkoutSetSchedule 1
     Day 0, Sun, WorkoutSetId=10] 
-    A --> C[WorkoutSchedule 2
+    A --> C[WorkoutSetSchedule 2
     Day 2, Tues, WorkoutSetId=11]
-    A --> D[WorkoutSchedule 3
+    A --> D[WorkoutSetSchedule 3
     Day 4, Thurs, WorkoutSetId=12]
     B -->E[ListWorkout1
     Pushups]

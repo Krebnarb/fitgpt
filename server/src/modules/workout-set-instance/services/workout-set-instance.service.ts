@@ -15,12 +15,34 @@ export class WorkoutSetInstanceService {
   }
 
   async findOne(id: number): Promise<Prisma.WorkoutSetInstanceGetPayload<{
-    include: { itemInstances: { include: { reps: true, workoutListItem: true } } }
+    include: { workoutSetItemInstances: { include: { reps: true, workoutListItem: true } } }
   }> | null> {
     return this.prisma.workoutSetInstance.findUnique({ 
       where: { id },
       include: { 
-        itemInstances: {
+        workoutSetItemInstances: {
+          include: { 
+            reps: true,
+            workoutListItem: true 
+          }
+        },
+      } 
+    });
+  }
+
+  // Add a function findNextScheduled to find the next scheduled workout set instance by userId
+  // Look for the first workout set instance that has a status of 'SCHEDULED' and is scheduled for a date in the future
+  async findNextScheduled(userId: number): Promise<Prisma.WorkoutSetInstanceGetPayload<{
+    include: { workoutSetItemInstances: { include: { reps: true, workoutListItem: true } } }
+  }> | null> {
+    return this.prisma.workoutSetInstance.findFirst({ 
+      where: { 
+        status: 'SCHEDULED',
+        scheduledDate: { gt: new Date() },
+        userId: userId
+      },
+      include: { 
+        workoutSetItemInstances: {
           include: { 
             reps: true,
             workoutListItem: true 
@@ -45,16 +67,17 @@ export class WorkoutSetInstanceService {
       throw new Error('Workout Set Instance not found');
     }
     
-    const itemInstances = workoutSetInstance.itemInstances.map(itemInstance => {
+    const itemInstances = workoutSetInstance.workoutSetItemInstances.map(itemInstance => {
       return {
         status: "NOT_STARTED" as Status,
+        order: itemInstance.order,
         workoutListItem: { connect: { id: itemInstance.workoutListItem.id } },
         reps: {
           create: itemInstance.reps.map(reps => {
             return {
               repNumber: reps.repNumber,
               count: reps.count,
-              weight: reps.weight
+              weight: reps.weight,
             }
           })
         }
@@ -65,7 +88,9 @@ export class WorkoutSetInstanceService {
       status: workoutSetInstance.status,
       description: workoutSetInstance.description,
       scheduledDate: new Date(),
-      itemInstances: { create: itemInstances }
+      workoutSetItemInstances: { create: itemInstances },
+      actualDate: null,
+      workoutPlanSetSchedule: { connect: { id: workoutSetInstance.workoutPlanSetScheduleId } }
     });
   }
 }

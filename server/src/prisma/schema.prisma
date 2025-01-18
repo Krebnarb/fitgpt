@@ -21,6 +21,8 @@ model WorkoutPlan {
   description String?                  @db.Text
   startDate   DateTime                 @default(now())
   schedule    WorkoutPlanSetSchedule[] @relation("WorkoutPlanToSchedule")
+  userId      Int
+  user        User                     @relation(fields: [userId], references: [id])
 }
 
 // Create workoutPlanSetSchedules, with columns for days_of_week (Array of Ints), and a workoutSetId
@@ -66,6 +68,8 @@ model WorkoutSetInstance {
   workoutPlanSetSchedule   WorkoutPlanSetSchedule   @relation(fields: [workoutPlanSetScheduleId], references: [id], name: "WorkoutPlanSetScheduleToInstance")
   workoutSetItemInstances  WorkoutSetItemInstance[] @relation("WorkoutSetInstanceToItemInstance")
   workoutPlanSetScheduleId Int
+  userId                   Int
+  user                     User                     @relation(fields: [userId], references: [id])
 }
 
 model ListWorkouts {
@@ -90,7 +94,7 @@ enum TargetArea {
 model WorkoutSetItemInstance {
   id                   Int                @id @default(autoincrement())
   workoutSetInstanceId Int
-  status              Status             @default(NOT_STARTED)
+  status               Status             @default(NOT_STARTED)
   order                Int
   listWorkoutId        Int
   workoutSetInstance   WorkoutSetInstance @relation(fields: [workoutSetInstanceId], references: [id], name: "WorkoutSetInstanceToItemInstance")
@@ -132,4 +136,15 @@ enum Status {
   SCHEDULED
   COMPLETED
   NOT_STARTED
+}
+
+model User {
+  id                 Int                  @id @default(autoincrement())
+  sourceName         String               @db.VarChar(255)
+  sourceId           String               @db.VarChar(255)
+  firstName          String               @db.VarChar(255)
+  lastName           String               @db.VarChar(255)
+  email              String               @db.VarChar(255)
+  WorkoutPlan        WorkoutPlan[]
+  WorkoutSetInstance WorkoutSetInstance[]
 }

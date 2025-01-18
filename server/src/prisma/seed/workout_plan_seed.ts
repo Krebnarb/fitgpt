@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 const seedData = {
   WorkoutPlan: {
     name: "Full Body Workout Plan",
+    userId: 1,
     startDate: new Date('2025-01-20T08:00:00Z'),
     description: "A comprehensive workout plan targeting all major muscle groups.",
     schedule: [
@@ -11,6 +12,7 @@ const seedData = {
         daysOfWeek: [1],
         workoutSetInstances: [
           {
+            userId: 1,
             scheduledDate: new Date('2025-01-01T08:00:00Z'),
             description: "Chest, Triceps, and Cardio",
             status: "COMPLETED" as Status,
@@ -88,6 +90,7 @@ const seedData = {
         daysOfWeek: [3],
         workoutSetInstances: [
           {
+            userId: 1,
             scheduledDate: new Date('2025-01-01T08:00:00Z'),
             description: "Back, Biceps, and Abs",
             status: "COMPLETED" as Status,
@@ -180,11 +183,13 @@ export async function main() {
     data: {
       name: seedData.WorkoutPlan.name,
       description: seedData.WorkoutPlan.description,
+      userId: seedData.WorkoutPlan.userId,
       schedule: {
         create: seedData.WorkoutPlan.schedule.map(schedule => ({
           daysOfWeek: schedule.daysOfWeek,
           workoutSetInstances: {
             create: schedule.workoutSetInstances.map(instance => ({
+              userId: instance.userId,
               scheduledDate: instance.scheduledDate,
               description: instance.description,
               status: instance.status,
