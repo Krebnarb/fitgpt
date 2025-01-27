@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { WorkoutSetInstanceModule } from './modules/workout-set-instance/workout-set-instance.module';
 import { SpeechModule } from './modules/speech/speech.module';
 import { RepModule } from './modules/rep/rep.module';
+import { TelegramModule } from './modules/telegram/telegram.module';
 // ...existing code...
 
 @Module({
@@ -13,7 +14,8 @@ import { RepModule } from './modules/rep/rep.module';
     }),
     WorkoutSetInstanceModule,
     SpeechModule,
-    RepModule
+    RepModule,
+    TelegramModule
   ],
   // ...existing code...
 })

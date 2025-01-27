@@ -134,6 +134,7 @@ enum WeightUnit {
 
 enum Status {
   SCHEDULED
+  IN_PROGRESS
   COMPLETED
   NOT_STARTED
 }

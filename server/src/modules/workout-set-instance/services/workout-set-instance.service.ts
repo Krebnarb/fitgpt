@@ -85,6 +85,7 @@ export class WorkoutSetInstanceService {
     });
 
     return this.create({
+      user: { connect: { id: workoutSetInstance.userId } },
       status: workoutSetInstance.status,
       description: workoutSetInstance.description,
       scheduledDate: new Date(),
