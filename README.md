@@ -27,7 +27,7 @@ Client
 cd client && npm install
 npm start
 ```
-
+****
 # Agent workflows
 
 ```mermaid
@@ -250,41 +250,95 @@ BODY
 
 # State Machine
 * WSI = WorkoutSetInstance
-* WSII = WorkoutSetItemInstance
-  
-| From State       | To State         | Condition                          |
-|------------------|------------------|------------------------------------|
-| WSI_IDLE         | WSI_STARTED      | WSI created or started                                   |
-| WSI_STARTED      | REP_STARTED      | User adds a workout set item.      |
-| REP_STARTED   | REP_COMPLETED
-| REP_COMPLETED | REP_STARTED
-|
-| ITEM_ADDED       | ITEM_COMPLETED   | User completes the item.          |
-| ITEM_COMPLETED   | ITEM_ADDED       | User adds another item.           |
-| ITEM_COMPLETED   | COMPLETED        | User finishes the workout set.    |
-
+* WSI_ITEM = Workout Set
 
 ```mermaid
 stateDiagram-v2
     [*] --> INITIATED: User initiates a workoutSet
 
-    INITIATED --> STARTED: System finds or creates a workoutSet record
-    STARTED --> ITEM_ADDED: User adds a workoutSetItem to workoutSet
-    ITEM_ADDED --> ITEM_COMPLETED: User completes workoutSetItem
-    ITEM_COMPLETED --> ITEM_ADDED: User adds another workoutSetItem
-    ITEM_COMPLETED --> COMPLETED: User completes workoutSet
+    INITIATED --> WSI_STARTED:  Finds or creates a workoutSet record
+    WSI_STARTED --> WSI_ITEM_STARTED: ITEM_CREATE, ITEM_DELETE
+    WSI_ITEM_STARTED --> REP_STARTED
+    REP_STARTED --> REP_COMPLETED: REP_UPDATE
+    REP_COMPLETED --> REP_STARTED
+    REP_COMPLETED --> WSI_ITEM_COMPLETED
+    WSI_ITEM_COMPLETED --> WSI_STARTED
+    WSI_ITEM_COMPLETED --> WSI_COMPLETED
+    
+    
+    WSI_COMPLETED --> [*]: Workflow ends
 
-    COMPLETED --> [*]: Workflow ends
-
-    %% Additional Notes
-    note right of INITIATED
-      Initial state where the workoutSet
-      is created or identified.
-    end note
-
-    note right of COMPLETED
-      Final state indicating all
-      items are completed.
+    note left of REP_COMPLETED
+        Reps repeat until all are done
     end note
     
+```
+The state diagram contains STATES and ACTIONS.  States are the boxes, ACTIONS are things that can happen on a state w/o changing the state.
+We will take the state diagram, and for each DIAGRAM and ACTION, define the SERVICE routes, as well as the CONTEXT needed in each state.
+
+Assume that **userId** is a required context for all States. 
+
+| STATE                    | CONTEXT                                     | SERVICES                                                                       |
+| ------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------ |
+| INITIATED                | userId                                      |                                          |
+| INITIATED: WSI_GET       | userId                                      | GET /workout-set-instance/:userId/next                                         |
+| INITIATED: WSI_CREATE    | userId                                      | POST /workout-set-instance/:userId                                             |
+| WSI_STARTED              | userId, workoutInstanceId                   | PATCH /workout-set-instance/:userId/:workoutInstanceId                         |
+| WSI_STARTED: ITEM_CREATE | userId, workoutInstanceId, workoutSetItemId | POST /workout-set-item-instance/:userId/:workoutInstanceId                     |
+| WSI_STARTED: ITEM_DELETE | userId, workoutInstanceId, workoutSetItemId | DELETE /workout-set-item-instance/:userId/:workoutInstanceId/:workoutSetItemId |
+| WSI_ITEM_STARTED         | userId, workoutSetInstanceId                | PATCH /workout-set-item-instance/:userId/:id                                   |
+| REP_STARTED              | userId, workoutSetItemInstanceId            | PATCH /rep/:userId/:workoutSetItemInstanceId                                   |
+| REP_STARTED: REP_UPDATE  | userId, workoutSetItemInstanceId, repId     | PATCH /rep/:userId/:workoutSetItemInstanceId/:repId                            |
+| REP_COMPLETED            | userId, workoutSetItemInstanceId            | PATCH /rep/:userId/:workoutSetItemInstanceId                                   |
+| WSI_ITEM_COMPLETED       | userId, workoutSetInstanceId                | PATCH /workout-set-item-instance/:userId/:id                                   |
+| WSI_COMPLETED            | userId, workoutInstanceId                   | PATCH /workout-set-instance/:userId/:workoutInstanceId                         |
+
+Next we need to map user intent to state transitions.
+
+Create a table with columns USER INTENT, STATE_TRANSITION
+- Start workout | INITIATED -> WSI_STARTED
+
+## State Machine Data Model
+```mermaid
+erDiagram
+    Workflows {
+        UUID id PK
+        STRING name "UNIQUE"
+        TIMESTAMP createdAt
+        TIMESTAMP updatedAt
+    }
+
+    WorkflowStates {
+        UUID id PK
+        UUID workflow_id FK "References Workflows"
+        STRING state
+        STRING action
+        STRING next_state
+        TIMESTAMP created_at
+    }
+
+    WorkflowInstances {
+        UUID id PK
+        UUID userId FK "References User"
+        UUID workoutSetInstanceId FK "References WorkoutSetInstance"
+        STRING current_state
+        JSONB context
+        ENUM status "IDLE, STARTED, IN_PROGRESS, COMPLETED, ABANDONED"
+        TIMESTAMP createdAt
+        TIMESTAMP updatedAt
+    }
+
+    WorkflowInstanceStates {
+        UUID id PK
+        UUID workflowInstanceId FK "References WorkflowInstances"
+        STRING previous_state
+        STRING new_state
+        STRING action
+        JSONB metadata
+        TIMESTAMP createdAt
+    }
+
+    Workflows ||--o{ WorkflowStates : "has many"
+    Workflows ||--o{ WorkflowInstances : "has many"
+    WorkflowInstances ||--o{ WorkflowInstanceStates : "has many"
 ```
