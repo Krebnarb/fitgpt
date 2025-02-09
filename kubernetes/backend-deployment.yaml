@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-nestjs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-nestjs
+  template:
+    metadata:
+      labels:
+        app: backend-nestjs
+    spec:
+      containers:
+      - name: backend-nestjs
+        image: my-app/backend-nestjs
+        ports:
+        - containerPort: 3001

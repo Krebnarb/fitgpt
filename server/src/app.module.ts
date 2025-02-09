@@ -4,6 +4,7 @@ import { WorkoutSetInstanceModule } from './modules/workout-set-instance/workout
 import { SpeechModule } from './modules/speech/speech.module';
 import { RepModule } from './modules/rep/rep.module';
 import { TelegramModule } from './modules/telegram/telegram.module';
+import { FlaskModule } from './modules/flask/flask.module';
 // ...existing code...
 
 @Module({
@@ -15,7 +16,8 @@ import { TelegramModule } from './modules/telegram/telegram.module';
     WorkoutSetInstanceModule,
     SpeechModule,
     RepModule,
-    TelegramModule
+    TelegramModule,
+    FlaskModule
   ],
   // ...existing code...
 })

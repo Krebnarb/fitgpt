@@ -1,0 +1,29 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-nestjs
+    networks:
+      - app-network
+
+  backend-nestjs:
+    build: ./server
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend-flask
+    networks:
+      - app-network
+
+  backend-flask:
+    build: ./server-flask
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
