@@ -1,6 +1,6 @@
 services:
   frontend:
-    build: ./frontend
+    build: ./client
     ports:
       - "8080:80"
     depends_on:
@@ -14,6 +14,7 @@ services:
       - "3001:3001"
     depends_on:
       - backend-flask
+      - postgres
     networks:
       - app-network
 
@@ -21,6 +22,20 @@ services:
     build: ./server-flask
     ports:
       - "5000:5000"
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_local_fitgpt
+    environment:
+      POSTGRES_USER: fitgpt
+      POSTGRES_PASSWORD: fitgpt
+      POSTGRES_DB: fitgpt
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     networks:
       - app-network
 
