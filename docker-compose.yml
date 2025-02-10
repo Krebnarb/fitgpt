@@ -2,9 +2,11 @@ services:
   frontend:
     build: ./client
     ports:
-      - "8080:80"
+      - "8080:3002"
     depends_on:
       - backend-nestjs
+    volumes:
+      - ./client:/app
     networks:
       - app-network
 
@@ -15,6 +17,8 @@ services:
     depends_on:
       - backend-flask
       - postgres
+    volumes:
+      - ./server:/app
     networks:
       - app-network
 
@@ -22,12 +26,14 @@ services:
     build: ./server-flask
     ports:
       - "5000:5000"
+    volumes:
+      - ./server-flask:/app
     networks:
       - app-network
 
   postgres:
     image: postgres:latest
-    container_name: postgres_local_fitgpt
+    container_name: postgres_local_fitgpt2
     environment:
       POSTGRES_USER: fitgpt
       POSTGRES_PASSWORD: fitgpt

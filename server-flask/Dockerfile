@@ -4,4 +4,4 @@ RUN apt-get update && apt-get install -y git
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python", "app/main.py"]
+CMD ["python", "app.py"]

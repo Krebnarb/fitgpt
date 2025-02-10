@@ -20,11 +20,11 @@
     "migrate:dev:create": "npx prisma migrate dev --create-only",
     "migrate:deploy": "npx prisma migrate deploy",
     "prisma:generate": "npx prisma generate --schema=src/prisma/schema.prisma",
-    "prisma:studio": "npx prisma studio",
+    "prisma:studio": "npx prisma studio --schema=src/prisma/schema.prisma",
     "prisma:seed": "npx prisma db seed --schema=src/prisma/schema.prisma",
     "prisma:push": "npx prisma db push --schema=src/prisma/schema.prisma",
     "start": "nest start",
-    "start:dev": "ts-node-dev src/main.ts",
+    "start:dev": "ts-node-dev --respawn --transpileOnly src/main.ts",
     "start:debug": "nest start --debug --watch",
     "start:build": "nest build",
     "build": "nest build"

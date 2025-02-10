@@ -4,4 +4,4 @@ COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 RUN npm run build
-CMD ["npx", "serve", "-s", "build", "-l", "80"]
+CMD ["npm", "start"]
